@@ -1,5 +1,6 @@
 import 'package:calculator_example/my_button.dart';
 import 'package:flutter/material.dart';
+import 'package:math_expressions/math_expressions.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -81,6 +82,20 @@ class _HomePageState extends State<HomePage> {
                         buttonText: buttons[index],
                       );
 
+                      // equal button
+                    } else if(index == buttons.length-1) {
+                      return MyButton(
+                        buttonTapped: () {
+                          setState(() {
+                            equalPressed();
+                          });
+                        },
+                        color: Colors.deepPurple,
+                        textColor: Colors.white,
+                        buttonText: buttons[index],
+                      );
+
+
                       // rest of the buttons
                     } else {
                       return MyButton(
@@ -109,5 +124,17 @@ class _HomePageState extends State<HomePage> {
     } else {
       return false;
     }
+  }
+
+  void equalPressed() {
+    String finalQuestion = userQuestion;
+    finalQuestion = finalQuestion.replaceAll('x', '*');
+
+    Parser p = Parser();
+    Expression exp = p.parse(finalQuestion);
+    ContextModel cm = ContextModel();
+    double eval = exp.evaluate(EvaluationType.REAL, cm);
+
+    userAnswer = eval.toString();
   }
 }
